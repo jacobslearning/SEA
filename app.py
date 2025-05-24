@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask,g, render_template, request, redirect, session
 import sqlite3 as sql
 
 app = Flask(__name__)
@@ -20,16 +20,16 @@ def close_db(error=None):
         db.close()
 
 def query_db(query, args=(), one=False):
-    cur = get_db().execute(query, args)
-    rv = cur.fetchall()
-    cur.close()
+    cursor = get_db().execute(query, args)
+    rv = cursor.fetchall()
+    cursor.close()
     return (rv[0] if rv else None) if one else rv
 
 def execute_db(query, args=()):
     db = get_db()
-    cur = db.execute(query, args)
+    cursor = db.execute(query, args)
     db.commit()
-    return cur.lastrowid
+    return cursor.lastrowid
 
 if __name__ == '__main__':
    app.run(debug = True)
