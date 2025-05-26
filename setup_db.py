@@ -35,7 +35,7 @@ def init_db():
 # TODO: insert some sample data in here 
     connection.commit()
     connection.close()
-    print("database.db initialized successfully.")
+    print("database.db created successfully.")
 
 if __name__ == '__main__':
     init_db()
