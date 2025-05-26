@@ -303,9 +303,10 @@ def users():
 @app.route('/user/edit/<int:user_id>', methods=['POST'])
 def edit_user(user_id):
     user = current_user()
-    username = request.form['username']
-    password = request.form['password']
-    role = request.form['role']
+    data = request.form
+    username = data['username']
+    password = data['password']
+    role = data['role']
 
     if user['role'] != 'Admin' and user['id'] != user_id:
         flash("Unauthorised Access", "danger")
