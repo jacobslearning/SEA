@@ -183,13 +183,13 @@ def edit_asset(asset_id):
 
     cursor.execute("""
         UPDATE Asset SET
-        name = ?, description = ?, type = ?, serial_number = ?, in_use = ?, department_id = ?,
+        name = ?, description = ?, type = ?, serial_number = ?, in_use = ?, department_id = ?, owner_id = ?,
         approved = ?
         WHERE id = ?
     """, (
         data['name'], data['description'], data['type'], data['serial_number'],
-        int(data.get('in_use', 1)), data['department'],
-        int(data.get('approved', 0)) if user['role'] == 'admin' else asset['approved'],
+        int(data.get('in_use', 1)), data['department_id'], data['assigned_user_id'],
+        int(data.get('approved', 0)) if user['role'] == 'Admin' else asset['approved'],
         asset_id
     ))
     connection.commit()
@@ -296,7 +296,6 @@ def promote_user(user_id):
     if user['role'] != 'Admin':
         flash("Unauthorised Access", "danger")
         return redirect(url_for('users'))
-    print("carrieds on")
     connection = get_db()
     cursor = connection.cursor()
     cursor.execute('UPDATE User SET role = "Admin" WHERE id = ?', (user_id,))
