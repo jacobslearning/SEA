@@ -234,7 +234,53 @@ def approve_asset(asset_id):
 @app.route('/departments')
 @login_required
 def departments():
-    print("departments page")
+    user = current_user()
+    connection = get_db()
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM Department")
+    departments = cursor.fetchall()
+    return render_template('departments.html', user=user, departments=departments)
+
+@app.route('/department/create', methods=['POST'])
+def create_department():
+    user = current_user()
+    data = request.form
+    connection = get_db()
+    cursor = connection.cursor()
+    if user['role'] != 'Admin':
+        flash("Unauthorised Access", "danger")
+        return redirect(url_for('departments'))
+    
+    cursor.execute('INSERT INTO Department (name) VALUES (?)', (data['name'],))
+    connection.commit()
+    return redirect(url_for('departments'))
+
+@app.route('/department/edit/<int:dept_id>', methods=['POST'])
+def edit_department(dept_id):
+    user = current_user()
+    data = request.form
+    connection = get_db()
+    cursor = connection.cursor()
+    if user['role'] != 'Admin':
+        flash("Unauthorised Access", "danger")
+        return redirect(url_for('departments'))
+    
+    cursor.execute('UPDATE Department SET name = ? WHERE id = ?', (data['name'], dept_id))
+    connection.commit()
+    return redirect(url_for('departments'))
+
+@app.route('/department/delete/<int:dept_id>', methods=['POST'])
+def delete_department(dept_id):
+    user = current_user()
+    connection = get_db()
+    cursor = connection.cursor()
+    if user['role'] != 'Admin':
+        flash("Unauthorised Access", "danger")
+        return redirect(url_for('departments'))
+    
+    cursor.execute('DELETE FROM Department WHERE id = ?', (dept_id,))
+    connection.commit()
+    return redirect(url_for('departments'))
 
 # users routes
 @app.route('/users')

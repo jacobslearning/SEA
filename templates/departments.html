@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Departments</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/departments.css') }}"
+    />
+  </head>
+  <body>
+    <div class="departments-container">
+      <h2 class="text-center">Departments</h2>
+
+      <nav class="nav-links">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('assets') }}">Assets</a>
+        <a href="{{ url_for('users') }}">Users</a>
+      </nav>
+
+      {% if user['role'] == 'Admin' %}
+      <button class="btn btn-create" id="openCreateModal">
+        + Add Department
+      </button>
+      {% endif %}
+
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            {% if user['role'] == 'Admin' %}
+            <th>Actions</th>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for dept in departments %}
+          <tr>
+            <td>{{ dept['name'] }}</td>
+            {% if user['role'] == 'Admin' %}
+            <td>
+              <button
+                class="btn btn-edit"
+                data-id="{{ dept['id'] }}"
+                data-name="{{ dept['name'] }}"
+              >
+                Edit
+              </button>
+              <form
+                method="post"
+                action="{{ url_for('delete_department', dept_id=dept['id']) }}"
+                style="display: inline"
+              >
+                <button
+                  type="submit"
+                  class="btn btn-delete"
+                  onclick="return confirm('Delete this department?');"
+                >
+                  Delete
+                </button>
+              </form>
+            </td>
+            {% endif %}
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="2">No departments found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% if user['role'] == 'Admin' %}
+    <!-- create/edit modal -->
+    <div class="modal-bg" id="modalBg">
+      <div class="modal">
+        <h3 id="modalTitle">Create Department</h3>
+        <form
+          method="post"
+          id="deptForm"
+          action="{{ url_for('create_department') }}"
+        >
+          <input type="hidden" name="dept_id" id="dept_id" />
+
+          <label for="name">Department Name</label>
+          <input type="text" name="name" id="name" required />
+
+          <div class="modal-buttons">
+            <button type="submit" class="btn-submit">Save</button>
+            <button type="button" class="btn-cancel" id="cancelBtn">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    {% endif %}
+
+    <script>
+      const isAdmin = "{{ user['role'] }}" === "Admin";
+      if (isAdmin) {
+        const modalBg = document.getElementById("modalBg");
+        const openCreateModalBtn = document.getElementById("openCreateModal");
+        const cancelBtn = document.getElementById("cancelBtn");
+        const modalTitle = document.getElementById("modalTitle");
+        const deptForm = document.getElementById("deptForm");
+
+        openCreateModalBtn.addEventListener("click", () => {
+          modalTitle.textContent = "Create Department";
+          deptForm.action = "{{ url_for('create_department') }}";
+          deptForm.reset();
+          document.getElementById("dept_id").value = "";
+          modalBg.classList.add("active");
+        });
+
+        cancelBtn.addEventListener("click", () => {
+          modalBg.classList.remove("active");
+        });
+
+        document.querySelectorAll(".btn-edit").forEach((button) => {
+          button.addEventListener("click", () => {
+            modalTitle.textContent = "Edit Department";
+            deptForm.action = `/department/edit/${button.dataset.id}`;
+            document.getElementById("dept_id").value = button.dataset.id;
+            document.getElementById("name").value = button.dataset.name;
+            modalBg.classList.add("active");
+          });
+        });
+      }
+    </script>
+  </body>
+</html>
