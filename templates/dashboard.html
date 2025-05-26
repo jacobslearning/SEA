@@ -13,6 +13,20 @@
       <form method="post" action="{{ url_for('logout') }}" class="logout-form">
         <button type="submit">Logout</button>
       </form>
+      <button id="info-icon" class="info-icon" aria-label="Help Info">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="30"
+          height="30"
+          viewBox="0 0 50 50"
+          fill="#007bff"
+        >
+          <path
+            d="M 25 2 C 12.309295 2 2 12.309295 2 25 C 2 37.690705 12.309295 48 25 48 C 37.690705 48 48 37.690705 48 25 C 48 12.309295 37.690705 2 25 2 z M 25 4 C 36.609824 4 46 13.390176 46 25 C 46 36.609824 36.609824 46 25 46 C 13.390176 46 4 36.609824 4 25 C 4 13.390176 13.390176 4 25 4 z M 25 11 A 3 3 0 0 0 22 14 A 3 3 0 0 0 25 17 A 3 3 0 0 0 28 14 A 3 3 0 0 0 25 11 z M 21 21 L 21 23 L 22 23 L 23 23 L 23 36 L 22 36 L 21 36 L 21 38 L 22 38 L 23 38 L 27 38 L 28 38 L 29 38 L 29 36 L 28 36 L 27 36 L 27 21 L 26 21 L 22 21 L 21 21 z"
+          ></path>
+        </svg>
+      </button>
+
       <img
         src="{{ url_for('static', filename='media/logo.png') }}"
         alt="M&S IT Tool"
@@ -63,6 +77,100 @@
           {% endif %}
         </tbody>
       </table>
+      <div
+        id="infoModal"
+        class="modal-bg"
+        aria-hidden="true"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalTitle"
+        style="display: none"
+      >
+        <div class="modal">
+          <h3 id="modalTitle">Helpful Information</h3>
+          <div class="info-modal-content">
+            <h2 style="text-align: left">About This Project</h2>
+            <p>
+              This project was completed by <strong>Jacob S</strong> for the
+              <strong>AC0 Software Engineering & Agile QA</strong> module.
+            </p>
+
+            <h3>Sample Data</h3>
+            <p>
+              All user accounts in the sample data use the password
+              <strong>password</strong>.
+            </p>
+
+            <h3>Alerts</h3>
+            <p>
+              All alert messages appear at the bottom of the screen to provide
+              useful success and failure prompts.
+            </p>
+
+            <h3>Additional Information</h3>
+            <p>
+              This application is an
+              <strong>IT Asset Management Tool</strong> developed for Marks &
+              Spencer.
+            </p>
+            <ul>
+              <li>
+                Any user can create a new asset and assign it to themselves and
+                any department.
+              </li>
+              <li>Users can edit or delete their own user accounts.</li>
+              <li>
+                Created assets are initially in a pending state (<em
+                  >Approved = No</em
+                >), visible on the assets table and dashboard, waiting for admin
+                approval.
+              </li>
+              <li>
+                Users can only see their own assets and their own user account
+                in the users table.
+              </li>
+            </ul>
+
+            <h3>Admin Capabilities</h3>
+            <p>Admins have increased privileges including:</p>
+            <ul>
+              <li>Approving assets.</li>
+              <li>Creating and assigning assets to any user.</li>
+              <li>Promoting users to admin.</li>
+              <li>
+                Performing create, read, update, and delete (CRUD) operations on
+                Assets, Departments, and Users.
+              </li>
+            </ul>
+          </div>
+
+          <div class="modal-buttons">
+            <button class="btn-cancel" id="cancelBtn">Close</button>
+          </div>
+        </div>
+      </div>
     </div>
   </body>
+  <script>
+    const infoIcon = document.getElementById("info-icon");
+    const infoModal = document.getElementById("infoModal");
+    const closeInfoModal = document.getElementById("cancelBtn");
+
+    infoIcon.addEventListener("click", () => {
+      infoModal.style.display = "flex";
+      infoModal.setAttribute("aria-hidden", "false");
+    });
+
+    closeInfoModal.addEventListener("click", () => {
+      infoModal.style.display = "none";
+      infoModal.setAttribute("aria-hidden", "true");
+    });
+
+    infoModal.addEventListener("click", (e) => {
+      if (e.target === infoModal) {
+        infoModal.style.display = "none";
+        infoModal.setAttribute("aria-hidden", "true");
+      }
+    });
+  </script>
 </html>

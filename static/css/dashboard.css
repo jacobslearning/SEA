@@ -1,6 +1,6 @@
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: #f5f7fa;
+  background: #006747;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -135,4 +135,88 @@ form {
   background-color: #d1ecf1;
   color: #0c5460;
   border: 1px solid #bee5eb;
+}
+
+.info-icon {
+  border: none;
+  border-radius: 50%;
+  background-color: transparent;
+  cursor: pointer;
+  position: absolute;
+  right: 85px;
+  top: 5px;
+}
+
+.info-icon:hover {
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+.info-icon svg {
+  display: block;
+}
+
+.modal-bg {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+.modal-bg.active {
+  display: flex;
+}
+
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: auto;
+  max-width: 95%;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
+}
+.modal h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+.modal #modalTitle {
+  text-align: center;
+}
+.modal label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+.modal input,
+.modal select {
+  width: auto;
+  padding: 8px 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.modal-buttons button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.modal-buttons .btn-submit {
+  background-color: #007bff;
+  color: white;
+}
+.modal-buttons .btn-cancel {
+  background-color: #6c757d;
+  color: white;
 }
