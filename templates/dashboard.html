@@ -13,6 +13,12 @@
       <form method="post" action="{{ url_for('logout') }}" class="logout-form">
         <button type="submit">Logout</button>
       </form>
+      <img
+        src="{{ url_for('static', filename='media/logo.png') }}"
+        alt="M&S IT Tool"
+        width="200"
+        class="logo"
+      />
       <h2 class="text-center">Welcome, {{ user['username'] }}!</h2>
 
       <nav class="nav-links">
@@ -21,11 +27,13 @@
         <a href="{{ url_for('departments') }}">Departments</a>
         <a href="{{ url_for('users') }}">Users</a>
       </nav>
-
-      <h3>
-        {{ 'All Pending Assets' if user['role'] == 'Admin' else 'Your Pending
-        Assets' }}
-      </h3>
+      <div class="pending-header">
+        <h3 class="heading-text">
+          {{ 'All Pending Assets' if user['role'] == 'Admin' else 'Your Pending
+          Assets' }}
+        </h3>
+        <h3 class="heading-text">Role: {{ user['role'] }}</h3>
+      </div>
 
       <table class="assets-table">
         <thead>

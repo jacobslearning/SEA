@@ -160,7 +160,7 @@ def create_asset():
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         data['name'], data['description'], data['type'], data['serial_number'], date_created,
-        int(data.get('in_use', 1)),int(data.get('approved', 1)), data['assigned_user_id'], data['department_id']
+        int(data.get('in_use', 1)),int(data.get('approved', 0)), data['assigned_user_id'], data['department_id']
     ))
     connection.commit()
     flash("Asset created and awaiting approval", "success")
