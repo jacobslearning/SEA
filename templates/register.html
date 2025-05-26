@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>IT Asset Manager</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="login-container">
+      <h2>Register</h2>
+      <form method="post">
+        <label>Username</label><br />
+        <input type="text" name="username" required />
+
+        <label>Password</label><br />
+        <input type="password" name="password" required />
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if
+        messages %}
+        <div class="flash-messages">
+          {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+        {% endif %} {% endwith %}
+        <button type="submit">Submit</button>
+      </form>
+
+      <p>
+        Already have an account?
+        <a href="{{ url_for('login') }}">Login here</a>.
+      </p>
+    </div>
+  </body>
+</html>
