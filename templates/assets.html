@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Assets - IT Asset Manager</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/assets.css') }}"
+    />
+  </head>
+  <body>
+    <div class="assets-container">
+      <h2 class="text-center">Assets</h2>
+
+      <button class="btn btn-create" id="openCreateModal">
+        + Create New Asset
+      </button>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Type</th>
+            <th>Serial Number</th>
+            <th>Department</th>
+            <th>Date Created</th>
+            <th>In Use</th>
+            <th>Approved</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for asset in assets %}
+          <tr>
+            <td>{{ asset['name'] }}</td>
+            <td>{{ asset['description'] or '—' }}</td>
+            <td>{{ asset['type'] or '—' }}</td>
+            <td>{{ asset['serial_number'] or '—' }}</td>
+            <td>{{ asset['department_name'] or '—' }}</td>
+            <td>{{ asset['date_created'] }}</td>
+            <td>{{ 'Yes' if asset['in_use'] else 'No' }}</td>
+            <td>{{ 'Yes' if asset['approved'] else 'No' }}</td>
+            <td>
+              {% if user['role'] == 'Admin' or asset['owner_id'] == user['id']
+              %}
+              <button
+                class="btn btn-edit"
+                data-id="{{ asset['id'] }}"
+                data-name="{{ asset['name'] }}"
+                data-description="{{ asset['description'] }}"
+                data-type="{{ asset['type'] }}"
+                data-serial="{{ asset['serial_number'] }}"
+                data-department="{{ asset['department_id'] or '' }}"
+                data-inuse="{{ asset['in_use'] }}"
+                data-approved="{{ asset['approved'] }}"
+                id="editBtn-{{ asset['id'] }}"
+              >
+                Edit
+              </button>
+              <form
+                method="post"
+                action="{{ url_for('delete_asset', asset_id=asset['id']) }}"
+                style="display: inline"
+              >
+                <button
+                  type="submit"
+                  class="btn btn-delete"
+                  onclick="return confirm('Are you sure you want to delete this asset?');"
+                >
+                  Delete
+                </button>
+              </form>
+              {% else %}
+              <em>No actions</em>
+              {% endif %}
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="9">No assets found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- create/edit assets -->
+    <div class="modal-bg" id="modalBg">
+      <div
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalTitle"
+      >
+        <h3 id="modalTitle">Create Asset</h3>
+        <form
+          method="post"
+          id="assetForm"
+          action="{{ url_for('create_asset') }}"
+        >
+          <input type="hidden" name="asset_id" id="asset_id" />
+
+          <label for="name">Asset Name</label>
+          <input type="text" name="name" id="name" required />
+
+          <label for="description">Description</label>
+          <textarea name="description" id="description" rows="3"></textarea>
+
+          <label for="type">Type</label>
+          <select name="type" id="type" required>
+            <option value="" disabled selected>Select type</option>
+            <option value="Phone">Phone</option>
+            <option value="Laptop">Laptop</option>
+            <option value="Desktop">Desktop</option>
+            <option value="Tablet">Tablet</option>
+            <option value="Windows">Windows</option>
+            <option value="Linux">Linux</option>
+            <option value="iOS">iOS</option>
+            <option value="Android">Android</option>
+          </select>
+
+          <label for="serial_number">Serial Number</label>
+          <input type="text" name="serial_number" id="serial_number" required />
+
+          <label for="department">Department</label>
+          <select name="department_id" id="department">
+            <option value="" selected>None</option>
+            {% for dept in departments %}
+            <option value="{{ dept['id'] }}">{{ dept['name'] }}</option>
+            {% endfor %}
+          </select>
+
+          <label for="in_use">In Use</label>
+          <select name="in_use" id="in_use" required>
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+          </select>
+
+          {% if user['role'] == 'Admin' %}
+          <label for="approved">Approved</label>
+          <select name="approved" id="approved" required>
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+          {% endif %}
+
+          <div class="modal-buttons">
+            <button type="submit" class="btn-submit">Save</button>
+            <button type="button" class="btn-cancel" id="cancelBtn">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const modalBg = document.getElementById("modalBg");
+      const openCreateModalBtn = document.getElementById("openCreateModal");
+      const cancelBtn = document.getElementById("cancelBtn");
+      const modalTitle = document.getElementById("modalTitle");
+      const assetForm = document.getElementById("assetForm");
+
+      // Open create modal
+      openCreateModalBtn.addEventListener("click", () => {
+        modalTitle.textContent = "Create Asset";
+        assetForm.action = "{{ url_for('create_asset') }}";
+        assetForm.reset();
+        document.getElementById("asset_id").value = "";
+        const isAdmin = "{{ user['role'] }}" === "admin";
+        if (!isAdmin) {
+          // Non-admin cannot set approved, remove the field
+          const approvedField = document.getElementById("approved");
+          if (approvedField) {
+            approvedField.parentElement?.remove();
+          }
+        }
+        modalBg.classList.add("active");
+      });
+
+      // Cancel modal
+      cancelBtn.addEventListener("click", () => {
+        modalBg.classList.remove("active");
+      });
+
+      // Open edit modal
+      document.querySelectorAll(".btn-edit").forEach((button) => {
+        button.addEventListener("click", () => {
+          modalTitle.textContent = "Edit Asset";
+          assetForm.action = "{{ url_for('edit_asset') }}"; // your edit route
+          modalBg.classList.add("active");
+          const isAdmin =
+            "{{ 'Admin' if user['role'] == 'admin' else 'User' }}";
+
+          // Populate form fields
+          document.getElementById("asset_id").value = button.dataset.id;
+          document.getElementById("name").value = button.dataset.name || "";
+          document.getElementById("description").value =
+            button.dataset.description || "";
+          document.getElementById("type").value = button.dataset.type || "";
+          document.getElementById("serial_number").value =
+            button.dataset.serial || "";
+          document.getElementById("department").value =
+            button.dataset.department || "";
+          document.getElementById("in_use").value = button.dataset.inuse || "1";
+          if (isAdmin === "Admin") {
+            document.getElementById("approved").value =
+              button.dataset.approved || "0";
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

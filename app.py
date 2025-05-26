@@ -2,6 +2,7 @@ from flask import Flask, flash, g, render_template, request, redirect, session, 
 import sqlite3 as sql
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = 'test'
@@ -103,10 +104,98 @@ def index():
         return redirect(url_for('dashboard'))
     return redirect(url_for('login'))
 
+# assets 
 @app.route('/assets')
 @login_required
 def assets():
-    print("assets page")
+    user = current_user()
+    connection = get_db()
+    cursor = connection.cursor()
+
+    if user['role'] == 'Admin':
+        cursor.execute("SELECT * FROM Asset")
+    else:
+        cursor.execute("SELECT * FROM Asset WHERE owner_id = ?", (user['id'],))
+
+    assets = cursor.fetchall()
+
+    cursor.execute("SELECT * FROM Department")
+    departments = cursor.fetchall()
+
+    return render_template('assets.html', assets=assets, user=user, departments=departments)
+
+@app.route('/asset/create', methods=['POST'])
+@login_required
+def create_asset():
+    data = request.form
+    user = current_user()
+    connection = get_db()
+    cursor = connection.cursor()
+
+    date_created = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    cursor.execute("""
+        INSERT INTO Asset (name, description, type, serial_number, date_created, in_use, approved, owner_id, department_id)
+        VALUES (?, ?, ?, ?, date('now'), ?, 0, ?, ?)
+    """, (
+        data['name'], data['description'], data['type'], data['serial_number'], date_created,
+        int(data.get('in_use', 1)), user['id'], data['department']
+    ))
+    connection.commit()
+    flash("Asset created and awaiting approval", "success")
+    return redirect(url_for('assets'))
+
+@app.route('/asset/edit/<int:asset_id>', methods=['POST'])
+@login_required
+def edit_asset(asset_id):
+    data = request.form
+    user = current_user()
+    connection = get_db()
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT * FROM Asset WHERE id = ?", (asset_id,))
+    asset = cursor.fetchone()
+
+    if asset is None or (user['role'] != 'Admin' and asset['owner_id'] != user['id']):
+        flash("Unauthorised Access", "danger")
+        return redirect(url_for('assets'))
+
+    cursor.execute("""
+        UPDATE Asset SET
+        name = ?, description = ?, type = ?, serial_number = ?, in_use = ?, department_id = ?,
+        approved = ?
+        WHERE id = ?
+    """, (
+        data['name'], data['description'], data['type'], data['serial_number'],
+        int(data.get('in_use', 1)), data['department'],
+        int(data.get('approved', 0)) if user['role'] == 'admin' else asset['approved'],
+        asset_id
+    ))
+    connection.commit()
+    flash("Asset updated", "success")
+    return redirect(url_for('assets'))
+
+@app.route('/asset/delete/<int:asset_id>', methods=['POST'])
+@login_required
+def delete_asset(asset_id):
+    user = current_user()
+    connection = get_db()
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT * FROM Asset WHERE id = ?", (asset_id,))
+    asset = cursor.fetchone()
+
+    if asset is None or (user['role'] != 'Admin' and asset['owner_id'] != user['id']):
+        flash("Unauthorised Access", "danger")
+        return redirect(url_for('assets'))
+
+    cursor.execute("DELETE FROM Asset WHERE id = ?", (asset_id,))
+    connection.commit()
+    flash("Asset deleted", "info")
+    return redirect(url_for('assets'))
+
+
+
 
 @app.route('/departments')
 @login_required
