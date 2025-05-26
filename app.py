@@ -194,7 +194,20 @@ def delete_asset(asset_id):
     flash("Asset deleted", "info")
     return redirect(url_for('assets'))
 
+@app.route('/asset/approve/<int:asset_id>', methods=['POST'])
+@login_required
+def approve_asset(asset_id):
+    user = current_user()
+    if user['role'] != 'Admin':
+        flash("Unauthorised Access", "danger")
+        return redirect(url_for('assets'))
 
+    connection = get_db()
+    cursor = connection.cursor()
+    cursor.execute("UPDATE Asset SET approved = 1 WHERE id = ?", (asset_id,))
+    connection.commit()
+    flash("Asset approved", "success")
+    return redirect(url_for('assets'))
 
 
 @app.route('/departments')

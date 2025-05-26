@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Assets - IT Asset Manager</title>
+    <title>IT Asset Manager</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/style.css') }}"
@@ -166,7 +166,7 @@
       const modalTitle = document.getElementById("modalTitle");
       const assetForm = document.getElementById("assetForm");
 
-      // Open create modal
+      // create modal
       openCreateModalBtn.addEventListener("click", () => {
         modalTitle.textContent = "Create Asset";
         assetForm.action = "{{ url_for('create_asset') }}";
@@ -174,7 +174,6 @@
         document.getElementById("asset_id").value = "";
         const isAdmin = "{{ user['role'] }}" === "admin";
         if (!isAdmin) {
-          // Non-admin cannot set approved, remove the field
           const approvedField = document.getElementById("approved");
           if (approvedField) {
             approvedField.parentElement?.remove();
@@ -188,16 +187,16 @@
         modalBg.classList.remove("active");
       });
 
-      // Open edit modal
+      // edit modal
       document.querySelectorAll(".btn-edit").forEach((button) => {
         button.addEventListener("click", () => {
           modalTitle.textContent = "Edit Asset";
-          assetForm.action = "{{ url_for('edit_asset') }}"; // your edit route
+          assetForm.action = `/asset/edit/${button.dataset.id}`;
           modalBg.classList.add("active");
           const isAdmin =
-            "{{ 'Admin' if user['role'] == 'admin' else 'User' }}";
+            "{{ 'Admin' if user['role'] == 'Admin' else 'User' }}";
 
-          // Populate form fields
+          // set form fields
           document.getElementById("asset_id").value = button.dataset.id;
           document.getElementById("name").value = button.dataset.name || "";
           document.getElementById("description").value =
