@@ -90,7 +90,7 @@ def login():
             
     return render_template('login.html')
 
-@app.route('/logout')
+@app.route('/logout', methods=['POST'])
 @login_required
 def logout():
     session.clear()
@@ -107,7 +107,29 @@ def index():
 @login_required
 def dashboard():
     user = current_user()
+    print("current user ", user)
     # TODO: if admin, show admin stuff, if user show user stuff
+    connection = get_db()
+    cursor = connection.cursor()
+
+    if(user['role'] == 'Admin'):
+        cursor.execute('''
+            SELECT a.*, u.username AS owner_username, d.name AS department_name
+            FROM Asset a
+            LEFT JOIN User u ON a.owner_id = u.id
+            LEFT JOIN Department d ON a.department_id = d.id
+        ''')
+    else:
+        cursor.execute('''
+            SELECT a.*, u.username AS owner_username, d.name AS department_name
+            FROM Asset a
+            LEFT JOIN User u ON a.owner_id = u.id
+            LEFT JOIN Department d ON a.department_id = d.id
+            WHERE a.owner_id = ? AND (a.approved = 0 OR a.approved = 1)
+        ''', (user['id'],))
+    assets = [dict(row) for row in cursor.fetchall()]
+    return render_template('dashboard.html', user=user, assets=assets)
+
 
 if __name__ == '__main__':
    app.run(debug = True)

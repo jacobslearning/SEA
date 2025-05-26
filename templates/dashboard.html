@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>IT Asset Manager</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <h2 class="text-center">Welcome, {{ user['username'] }}!</h2>
+
+      <nav class="nav-links">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('assets') }}">Assets</a>
+        <a href="{{ url_for('departments') }}">Departments</a>
+        {% if user['role'] == 'admin' %}
+        <a href="{{ url_for('users') }}">Users</a>
+        {% endif %}
+        <form
+          method="post"
+          action="{{ url_for('logout') }}"
+          class="logout-form"
+        >
+          <button type="submit">Logout</button>
+        </form>
+      </nav>
+
+      <h3>
+        {{ 'All Pending Assets' if user['role'] == 'Admin' else 'Your Pending
+        Assets' }}
+      </h3>
+
+      <table class="assets-table">
+        <thead>
+          <tr>
+            <th>Asset Name</th>
+            <th>Type</th>
+            <th>Serial Number</th>
+            <th>Assigned To</th>
+            <th>Department</th>
+            <th>Date Created</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for asset in assets %}
+          <tr>
+            <td>{{ asset['name'] }}</td>
+            <td>{{ asset['type'] }}</td>
+            <td>{{ asset['serial'] }}</td>
+            <td>{{ asset['owner_username'] }}</td>
+            <td>{{ asset['department_name'] or '—' }}</td>
+            <td>{{ asset['date_created'] }}</td>
+          </tr>
+          {% endfor %} {% if assets|length == 0 %}
+          <tr>
+            <td colspan="6">No pending assets to display.</td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
