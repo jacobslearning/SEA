@@ -340,6 +340,8 @@ def delete_user(user_id):
     cursor.execute('DELETE FROM User WHERE id = ?', (int(user_id),))
     connection.commit()
     flash(f"User deleted", "info")
+    if user['id'] == user_id: # User deleted their own account
+        return(redirect(url_for('login')))
     return redirect(url_for('users'))
 
 @app.route('/user/promote/<int:user_id>', methods=['POST'])
