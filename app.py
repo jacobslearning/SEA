@@ -110,19 +110,18 @@ def assets():
 
 @app.route('/departments')
 @login_required
-def assets():
+def departments():
     print("departments page")
 
 @app.route('/users')
 @login_required
-def assets():
+def users():
     print("users page")
 
 @app.route('/dashboard')
 @login_required
 def dashboard():
     user = current_user()
-    print("current user ", user)
     # TODO: if admin, show admin stuff, if user show user stuff
     connection = get_db()
     cursor = connection.cursor()

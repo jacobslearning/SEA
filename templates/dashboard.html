@@ -5,11 +5,14 @@
     <title>IT Asset Manager</title>
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename='css/style.css') }}"
+      href="{{ url_for('static', filename='css/dashboard.css') }}"
     />
   </head>
   <body>
     <div class="dashboard-container">
+      <form method="post" action="{{ url_for('logout') }}" class="logout-form">
+        <button type="submit">Logout</button>
+      </form>
       <h2 class="text-center">Welcome, {{ user['username'] }}!</h2>
 
       <nav class="nav-links">
@@ -19,13 +22,6 @@
         {% if user['role'] == 'admin' %}
         <a href="{{ url_for('users') }}">Users</a>
         {% endif %}
-        <form
-          method="post"
-          action="{{ url_for('logout') }}"
-          class="logout-form"
-        >
-          <button type="submit">Logout</button>
-        </form>
       </nav>
 
       <h3>
