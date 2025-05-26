@@ -323,7 +323,7 @@ def create_user():
     connection.commit()
     flash(f"User {username} created", "success")
     return redirect(url_for('users'))
-# add flash alerts for success/edit success on every route. 
+
 @app.route('/dashboard')
 @login_required
 def dashboard():
@@ -350,6 +350,6 @@ def dashboard():
     assets = [dict(row) for row in cursor.fetchall()]
     return render_template('dashboard.html', user=user, assets=assets)
 
-
+# make it so admins cant demote themselves back to user
 if __name__ == '__main__':
    app.run(debug = True)
