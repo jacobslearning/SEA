@@ -173,8 +173,8 @@
           {% endif %}
 
           <label for="department">Department</label>
-          <select name="department_id" id="department">
-            <option value="" selected>None</option>
+          <select name="department_id" id="department" required>
+            <option value="" disabled selected>Select department</option>
             {% for dept in departments %}
             <option value="{{ dept['id'] }}">{{ dept['name'] }}</option>
             {% endfor %}

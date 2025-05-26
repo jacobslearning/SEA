@@ -32,11 +32,11 @@ th {
 .btn-create {
   background-color: #28a745;
   color: white;
-  margin-bottom: 15px;
 }
 .btn-edit {
   background-color: #007bff;
   color: white;
+  margin-bottom: 6px;
 }
 .btn-delete {
   background-color: #dc3545;
@@ -46,6 +46,7 @@ th {
 .btn-approve {
   background-color: #28a745;
   color: white;
+  margin-bottom: 6px;
 }
 
 .modal-bg {
