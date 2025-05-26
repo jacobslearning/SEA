@@ -113,9 +113,19 @@ def assets():
     cursor = connection.cursor()
 
     if user['role'] == 'Admin':
-        cursor.execute("SELECT * FROM Asset")
+         cursor.execute('''
+            SELECT a.*, u.username AS owner_username, d.name AS department_name
+            FROM Asset a
+            LEFT JOIN User u ON a.owner_id = u.id
+            LEFT JOIN Department d ON a.department_id = d.id
+        ''')
     else:
-        cursor.execute("SELECT * FROM Asset WHERE owner_id = ?", (user['id'],))
+        cursor.execute('''
+            SELECT a.*, u.username AS owner_username, d.name AS department_name
+            FROM Asset a
+            LEFT JOIN User u ON a.owner_id = u.id
+            LEFT JOIN Department d ON a.department_id = d.id
+        ''', (user['id'],))
 
     assets = cursor.fetchall()
 
