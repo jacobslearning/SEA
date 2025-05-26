@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Users</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/users.css') }}"
+    />
+  </head>
+  <body>
+    <div class="users-container">
+      <h2 class="text-center">Users</h2>
+
+      <nav class="nav-links">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('departments') }}">Departments</a>
+        <a href="{{ url_for('assets') }}">Assets</a>
+      </nav>
+
+      <input
+        type="text"
+        id="userSearch"
+        placeholder="Search users..."
+        style="margin: 15px 0; padding: 6px; width: 250px"
+      />
+
+      <button class="btn btn-create" id="openCreateModal">
+        + Create New User
+      </button>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+          <tr>
+            <td>{{ u['username'] }}</td>
+            <td>{{ u['role'] }}</td>
+            <td></td>
+            <td>
+              {% if user['role'] == 'Admin' or user['id'] == u['id'] %}
+              <button
+                class="btn btn-edit"
+                data-id="{{ u['id'] }}"
+                data-username="{{ u['username'] }}"
+                data-role="{{ u['role'] }}"
+              >
+                Edit
+              </button>
+
+              <form
+                method="post"
+                action="{{ url_for('delete_user', user_id=u['id']) }}"
+                style="display: inline"
+              >
+                <button
+                  type="submit"
+                  class="btn btn-delete"
+                  onclick="return confirm('Delete this user?');"
+                >
+                  Delete
+                </button>
+              </form>
+              {% endif %} {% if user['role'] == 'Admin' and u['role'] != 'Admin'
+              %}
+              <form
+                method="post"
+                action="{{ url_for('promote_user', user_id=u['id']) }}"
+                style="display: inline"
+              >
+                <button
+                  type="submit"
+                  class="btn btn-approve"
+                  onclick="return confirm('Promote to admin?');"
+                >
+                  Promote
+                </button>
+              </form>
+              {% endif %}
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="3">No users found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- create/edit user -->
+    <div class="modal-bg" id="modalBg">
+      <div class="modal">
+        <h3 id="modalTitle">Create User</h3>
+        <form method="post" id="userForm" action="{{ url_for('create_user') }}">
+          <input type="hidden" name="user_id" id="user_id" />
+
+          <label for="username">Username</label>
+          <input type="text" name="username" id="username" required />
+
+          <label for="role">Role</label>
+          <select name="role" id="role" required>
+            <option value="User">User</option>
+            <option value="Admin">Admin</option>
+          </select>
+
+          <div class="modal-buttons">
+            <button type="submit" class="btn-submit">Save</button>
+            <button type="button" class="btn-cancel" id="cancelBtn">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const modalBg = document.getElementById("modalBg");
+      const openCreateModalBtn = document.getElementById("openCreateModal");
+      const cancelBtn = document.getElementById("cancelBtn");
+      const modalTitle = document.getElementById("modalTitle");
+      const userForm = document.getElementById("userForm");
+
+      // create modal
+      openCreateModalBtn.addEventListener("click", () => {
+        modalTitle.textContent = "Create User";
+        userForm.action = "{{ url_for('create_user') }}";
+        userForm.reset();
+        document.getElementById("user_id").value = "";
+        modalBg.classList.add("active");
+      });
+
+      // cancel modal
+      cancelBtn.addEventListener("click", () => {
+        modalBg.classList.remove("active");
+      });
+
+      // edit modal
+      document.querySelectorAll(".btn-edit").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          modalTitle.textContent = "Edit User";
+          userForm.action = `/user/edit/${btn.dataset.id}`;
+          document.getElementById("user_id").value = btn.dataset.id;
+          document.getElementById("username").value = btn.dataset.username;
+          document.getElementById("role").value = btn.dataset.role;
+          modalBg.classList.add("active");
+        });
+      });
+
+      document
+        .getElementById("searchBar")
+        .addEventListener("input", function () {
+          const filter = this.value.toLowerCase();
+          const rows = document.querySelectorAll("table tbody tr");
+          rows.forEach((row) => {
+            const rowText = row.textContent.toLowerCase();
+            row.style.display = rowText.includes(filter) ? "" : "none";
+          });
+        });
+    </script>
+  </body>
+</html>
