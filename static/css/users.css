@@ -1,7 +1,7 @@
-#searchBar {
+#userSearch {
   margin-bottom: 10px;
   padding: 5px;
-  width: 300px;
+  width: auto;
   font-size: 16px;
   position: absolute;
   right: 10px;
@@ -10,6 +10,7 @@
 .users-container {
   max-width: 1000px;
   margin: 40px auto;
+  width: 500px;
   padding: 20px;
   background: #fff;
   border-radius: 12px;
@@ -120,13 +121,4 @@ th {
 .modal-buttons .btn-cancel {
   background-color: #6c757d;
   color: white;
-}
-
-#searchBar {
-  margin-bottom: 10px;
-  padding: 5px;
-  width: 300px;
-  font-size: 16px;
-  position: absolute;
-  right: 10px;
 }

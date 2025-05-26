@@ -39,7 +39,6 @@ def current_user():
         return query_db('SELECT * FROM User WHERE id = ?', [session['user_id']], one=True)
     return None
 
-#TODO: create register/login/dashboard templates
 # login decorater 
 def login_required(f):
     @wraps(f)
@@ -47,6 +46,16 @@ def login_required(f):
         if 'user_id' not in session:
             flash('Please log in to access this page.', 'warning')
             return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        user = session.get('user')
+        if not user or user.get('role') != 'Admin':
+            flash("Unauthorised Access", "danger")
+            return redirect(url_for('dashboard'))
         return f(*args, **kwargs)
     return decorated_function
 
@@ -227,11 +236,91 @@ def approve_asset(asset_id):
 def departments():
     print("departments page")
 
+# users routes
 @app.route('/users')
 @login_required
 def users():
-    print("users page")
+    user = current_user()
+    connection = get_db()
+    cursor = connection.cursor()
+    
+    if user['role'] == 'Admin':
+        cursor.execute("SELECT id, username, password_hash, role FROM User")
+    else:
+        cursor.execute("SELECT id, username, password_hash, role FROM User WHERE id = ?", (int(user['id']),))
+    users = cursor.fetchall()
+    return render_template('users.html', users=users, user=user)
 
+@app.route('/user/edit/<int:user_id>', methods=['POST'])
+def edit_user(user_id):
+    user = current_user()
+    username = request.form['username']
+    password = request.form['password']
+    role = request.form['role']
+
+    if user['role'] != 'Admin' and user['id'] != user_id:
+        flash("Unauthorised Access", "danger")
+        return redirect(url_for('users'))
+    
+    if user['role'] != 'Admin':
+        role = "User"
+
+    connection = get_db()
+    cursor = connection.cursor()
+    # if value is [HIDDEN], user is not changing their password, if value is different, password should be hashed and updated in DB
+    if password == '[HIDDEN]':
+        cursor.execute('UPDATE User SET username = ?, role = ? WHERE id = ?', (username, role, user_id))
+    else:
+        password_hash = generate_password_hash(password)
+        cursor.execute('UPDATE User SET username = ?, password_hash = ?, role = ? WHERE id = ?', (username, password_hash, role, user_id))
+    connection.commit()
+    return redirect(url_for('users'))
+
+@app.route('/user/delete/<int:user_id>', methods=['POST'])
+def delete_user(user_id):
+    user = current_user()
+    if user['role'] != 'Admin' and user['id'] != user_id:
+        flash("Unauthorised Access", "danger")
+        return redirect(url_for('users'))
+    
+    connection = get_db()
+    cursor = connection.cursor()
+    print(user_id)
+    cursor.execute('DELETE FROM User WHERE id = ?', (int(user_id),))
+    connection.commit()
+    return redirect(url_for('users'))
+
+@app.route('/user/promote/<int:user_id>', methods=['POST'])
+def promote_user(user_id):
+    user = current_user()
+    if user['role'] != 'Admin':
+        flash("Unauthorised Access", "danger")
+        return redirect(url_for('users'))
+    print("carrieds on")
+    connection = get_db()
+    cursor = connection.cursor()
+    cursor.execute('UPDATE User SET role = "Admin" WHERE id = ?', (user_id,))
+    connection.commit()
+    return redirect(url_for('users'))
+
+@app.route('/user/create', methods=['POST'])
+def create_user():
+    user = current_user()
+    if user['role'] != 'Admin':
+        flash("Unauthorised Access", "danger")
+        return redirect(url_for('users'))
+    
+    username = request.form['username']
+    password = request.form['password']
+    role = request.form['role']
+    password_hash = generate_password_hash(password)
+
+    connection = get_db()
+    cursor = connection.cursor()
+    cursor.execute('INSERT INTO User (username,password_hash,role) VALUES (?,?,?)', (username, password_hash, role))
+    connection.commit()
+    return redirect(url_for('users'))
+# add flash alerts for success/edit success on every route. 
 @app.route('/dashboard')
 @login_required
 def dashboard():

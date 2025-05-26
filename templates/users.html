@@ -22,16 +22,10 @@
         <a href="{{ url_for('assets') }}">Assets</a>
       </nav>
 
-      <input
-        type="text"
-        id="userSearch"
-        placeholder="Search users..."
-        style="margin: 15px 0; padding: 6px; width: 250px"
-      />
-
       <button class="btn btn-create" id="openCreateModal">
         + Create New User
       </button>
+      <input type="text" id="userSearch" placeholder="Search users..." />
 
       <table>
         <thead>
@@ -46,9 +40,23 @@
           <tr>
             <td>{{ u['username'] }}</td>
             <td>{{ u['role'] }}</td>
-            <td></td>
             <td>
-              {% if user['role'] == 'Admin' or user['id'] == u['id'] %}
+              {% if user['role'] == 'Admin' and u['role'] != 'Admin' %}
+              <form
+                method="post"
+                action="{{ url_for('promote_user', user_id=u['id']) }}"
+                style="display: inline"
+              >
+                <button
+                  type="submit"
+                  class="btn btn-approve"
+                  onclick="return confirm('Promote to admin?');"
+                >
+                  Promote
+                </button>
+              </form>
+              {% endif %} {% if user['role'] == 'Admin' or user['id'] == u['id']
+              %}
               <button
                 class="btn btn-edit"
                 data-id="{{ u['id'] }}"
@@ -71,21 +79,6 @@
                   Delete
                 </button>
               </form>
-              {% endif %} {% if user['role'] == 'Admin' and u['role'] != 'Admin'
-              %}
-              <form
-                method="post"
-                action="{{ url_for('promote_user', user_id=u['id']) }}"
-                style="display: inline"
-              >
-                <button
-                  type="submit"
-                  class="btn btn-approve"
-                  onclick="return confirm('Promote to admin?');"
-                >
-                  Promote
-                </button>
-              </form>
               {% endif %}
             </td>
           </tr>
@@ -96,6 +89,15 @@
           {% endfor %}
         </tbody>
       </table>
+
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %}
+      <div class="flash-messages">
+        {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %} {% endwith %}
     </div>
 
     <!-- create/edit user -->
@@ -107,6 +109,9 @@
 
           <label for="username">Username</label>
           <input type="text" name="username" id="username" required />
+
+          <label for="password">Password</label>
+          <input type="text" name="password" id="password" required />
 
           <label for="role">Role</label>
           <select name="role" id="role" required>
@@ -152,13 +157,14 @@
           userForm.action = `/user/edit/${btn.dataset.id}`;
           document.getElementById("user_id").value = btn.dataset.id;
           document.getElementById("username").value = btn.dataset.username;
+          document.getElementById("password").value = "[HIDDEN]";
           document.getElementById("role").value = btn.dataset.role;
           modalBg.classList.add("active");
         });
       });
 
       document
-        .getElementById("searchBar")
+        .getElementById("userSearch")
         .addEventListener("input", function () {
           const filter = this.value.toLowerCase();
           const rows = document.querySelectorAll("table tbody tr");
