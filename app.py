@@ -236,7 +236,6 @@ def users():
 @login_required
 def dashboard():
     user = current_user()
-    # TODO: if admin, show admin stuff, if user show user stuff
     connection = get_db()
     cursor = connection.cursor()
 
