@@ -74,7 +74,7 @@
                 <button
                   type="submit"
                   class="btn btn-delete"
-                  onclick="return confirm('Delete this user?');"
+                  onclick="return confirm('Delete this user? This operation will remove all related assets.');"
                 >
                   Delete
                 </button>
@@ -113,11 +113,16 @@
           <label for="password">Password</label>
           <input type="text" name="password" id="password" required />
 
+          {% if user['role'] == 'Admin' %}
           <label for="role">Role</label>
           <select name="role" id="role" required>
             <option value="User">User</option>
             <option value="Admin">Admin</option>
           </select>
+          {% else %}
+          <label for="role">Assigned Role</label>
+          <input type="text" id="role" value="{{ user['role'] }}" disabled />
+          {% endif %}
 
           <div class="modal-buttons">
             <button type="submit" class="btn-submit">Save</button>

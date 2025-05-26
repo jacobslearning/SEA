@@ -285,7 +285,7 @@ def delete_user(user_id):
     
     connection = get_db()
     cursor = connection.cursor()
-    print(user_id)
+    cursor.execute('DELETE FROM Asset WHERE owner_id = ?', (int(user_id),))
     cursor.execute('DELETE FROM User WHERE id = ?', (int(user_id),))
     connection.commit()
     return redirect(url_for('users'))
