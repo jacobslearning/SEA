@@ -27,6 +27,8 @@
         + Create New Asset
       </button>
 
+      <input type="text" id="searchBar" placeholder="Search assets..." />
+
       <table>
         <thead>
           <tr>
@@ -263,6 +265,17 @@
           }
         });
       });
+      document
+        .getElementById("searchBar")
+        .addEventListener("input", function () {
+          const filter = this.value.toLowerCase();
+          const rows = document.querySelectorAll("table tbody tr");
+
+          rows.forEach((row) => {
+            const rowText = row.textContent.toLowerCase();
+            row.style.display = rowText.includes(filter) ? "" : "none";
+          });
+        });
     </script>
   </body>
 </html>

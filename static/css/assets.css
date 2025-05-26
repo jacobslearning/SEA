@@ -5,6 +5,7 @@
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  position: relative;
 }
 table {
   width: 100%;
@@ -110,4 +111,13 @@ th {
 .modal-buttons .btn-cancel {
   background-color: #6c757d;
   color: white;
+}
+
+#searchBar {
+  margin-bottom: 10px;
+  padding: 5px;
+  width: 300px;
+  font-size: 16px;
+  position: absolute;
+  right: 10px;
 }
