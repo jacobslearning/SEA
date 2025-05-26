@@ -274,6 +274,7 @@ def edit_user(user_id):
         password_hash = generate_password_hash(password)
         cursor.execute('UPDATE User SET username = ?, password_hash = ?, role = ? WHERE id = ?', (username, password_hash, role, user_id))
     connection.commit()
+    flash(f"User {username} updated", "success")
     return redirect(url_for('users'))
 
 @app.route('/user/delete/<int:user_id>', methods=['POST'])
@@ -288,6 +289,7 @@ def delete_user(user_id):
     cursor.execute('DELETE FROM Asset WHERE owner_id = ?', (int(user_id),))
     cursor.execute('DELETE FROM User WHERE id = ?', (int(user_id),))
     connection.commit()
+    flash(f"User deleted", "info")
     return redirect(url_for('users'))
 
 @app.route('/user/promote/<int:user_id>', methods=['POST'])
@@ -300,6 +302,7 @@ def promote_user(user_id):
     cursor = connection.cursor()
     cursor.execute('UPDATE User SET role = "Admin" WHERE id = ?', (user_id,))
     connection.commit()
+    flash(f"User promoted to Admin", "success")
     return redirect(url_for('users'))
 
 @app.route('/user/create', methods=['POST'])
@@ -318,6 +321,7 @@ def create_user():
     cursor = connection.cursor()
     cursor.execute('INSERT INTO User (username,password_hash,role) VALUES (?,?,?)', (username, password_hash, role))
     connection.commit()
+    flash(f"User {username} created", "success")
     return redirect(url_for('users'))
 # add flash alerts for success/edit success on every route. 
 @app.route('/dashboard')
