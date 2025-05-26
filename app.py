@@ -234,6 +234,7 @@ def dashboard():
             FROM Asset a
             LEFT JOIN User u ON a.owner_id = u.id
             LEFT JOIN Department d ON a.department_id = d.id
+            WHERE a.approved = 0
         ''')
     else:
         cursor.execute('''
@@ -241,7 +242,7 @@ def dashboard():
             FROM Asset a
             LEFT JOIN User u ON a.owner_id = u.id
             LEFT JOIN Department d ON a.department_id = d.id
-            WHERE a.owner_id = ? AND (a.approved = 0 OR a.approved = 1)
+            WHERE a.owner_id = ? AND a.approved = 0
         ''', (user['id'],))
     assets = [dict(row) for row in cursor.fetchall()]
     return render_template('dashboard.html', user=user, assets=assets)
