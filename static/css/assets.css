@@ -43,6 +43,11 @@ th {
   color: white;
 }
 
+.btn-approve {
+  background-color: #28a745;
+  color: white;
+}
+
 .modal-bg {
   display: none;
   position: fixed;

@@ -131,14 +131,15 @@ def assets():
 
     cursor.execute("SELECT * FROM Department")
     departments = cursor.fetchall()
+    cursor.execute("SELECT id, username FROM User ORDER BY username ASC")
+    users = cursor.fetchall()
 
-    return render_template('assets.html', assets=assets, user=user, departments=departments)
+    return render_template('assets.html', assets=assets, user=user, departments=departments, users=users)
 
 @app.route('/asset/create', methods=['POST'])
 @login_required
 def create_asset():
     data = request.form
-    user = current_user()
     connection = get_db()
     cursor = connection.cursor()
 
@@ -149,7 +150,7 @@ def create_asset():
         VALUES (?, ?, ?, ?, date('now'), ?, 0, ?, ?)
     """, (
         data['name'], data['description'], data['type'], data['serial_number'], date_created,
-        int(data.get('in_use', 1)), user['id'], data['department']
+        int(data.get('in_use', 1)), data['assigned_user_id'], data['department']
     ))
     connection.commit()
     flash("Asset created and awaiting approval", "success")
