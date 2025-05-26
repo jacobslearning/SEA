@@ -38,6 +38,9 @@
             <th>Date Created</th>
             <th>In Use</th>
             <th>Approved</th>
+            {% if user['role'] == 'Admin' %}
+            <th>Assigned To</th>
+            {% endif %}
             <th>Actions</th>
           </tr>
         </thead>
@@ -52,6 +55,9 @@
             <td>{{ asset['date_created'] }}</td>
             <td>{{ 'Yes' if asset['in_use'] else 'No' }}</td>
             <td>{{ 'Yes' if asset['approved'] else 'No' }}</td>
+            {% if user['role'] == 'Admin' %}
+            <td>{{ asset['owner_username'] or '—' }}</td>
+            {% endif %}
             <td>
               {% if user['role'] == 'Admin' and not asset['approved'] %}
               <form
@@ -84,6 +90,7 @@
               >
                 Edit
               </button>
+              {% endif %} {% if user['role'] == 'Admin' %}
               <form
                 method="post"
                 action="{{ url_for('delete_asset', asset_id=asset['id']) }}"
@@ -97,8 +104,6 @@
                   Delete
                 </button>
               </form>
-              {% else %}
-              <em>No actions</em>
               {% endif %}
             </td>
           </tr>

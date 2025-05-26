@@ -125,6 +125,7 @@ def assets():
             FROM Asset a
             LEFT JOIN User u ON a.owner_id = u.id
             LEFT JOIN Department d ON a.department_id = d.id
+            WHERE a.owner_id = ?
         ''', (user['id'],))
 
     assets = cursor.fetchall()
@@ -147,10 +148,10 @@ def create_asset():
 
     cursor.execute("""
         INSERT INTO Asset (name, description, type, serial_number, date_created, in_use, approved, owner_id, department_id)
-        VALUES (?, ?, ?, ?, date('now'), ?, 0, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         data['name'], data['description'], data['type'], data['serial_number'], date_created,
-        int(data.get('in_use', 1)), data['assigned_user_id'], data['department']
+        int(data.get('in_use', 1)),int(data.get('approved', 1)), data['assigned_user_id'], data['department_id']
     ))
     connection.commit()
     flash("Asset created and awaiting approval", "success")
