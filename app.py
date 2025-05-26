@@ -103,6 +103,21 @@ def index():
         return redirect(url_for('dashboard'))
     return redirect(url_for('login'))
 
+@app.route('/assets')
+@login_required
+def assets():
+    print("assets page")
+
+@app.route('/departments')
+@login_required
+def assets():
+    print("departments page")
+
+@app.route('/users')
+@login_required
+def assets():
+    print("users page")
+
 @app.route('/dashboard')
 @login_required
 def dashboard():
