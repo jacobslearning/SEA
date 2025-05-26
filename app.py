@@ -253,6 +253,7 @@ def create_department():
     
     cursor.execute('INSERT INTO Department (name) VALUES (?)', (data['name'],))
     connection.commit()
+    flash(f"Department {data['name']} created", "success")
     return redirect(url_for('departments'))
 
 @app.route('/department/edit/<int:dept_id>', methods=['POST'])
@@ -267,6 +268,7 @@ def edit_department(dept_id):
     
     cursor.execute('UPDATE Department SET name = ? WHERE id = ?', (data['name'], dept_id))
     connection.commit()
+    flash(f"Department {data['name']} updated", "success")
     return redirect(url_for('departments'))
 
 @app.route('/department/delete/<int:dept_id>', methods=['POST'])
@@ -280,6 +282,7 @@ def delete_department(dept_id):
     
     cursor.execute('DELETE FROM Department WHERE id = ?', (dept_id,))
     connection.commit()
+    flash(f"Department deleted", "info")
     return redirect(url_for('departments'))
 
 # users routes
