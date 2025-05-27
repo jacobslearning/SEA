@@ -170,10 +170,24 @@
         btn.addEventListener("click", () => {
           modalTitle.textContent = "Edit User";
           userForm.action = `/user/edit/${btn.dataset.id}`;
+
+          const currentUserId = parseInt("{{ user['id'] }}");
+          const currentRole = "{{ user['role'] }}";
+          const editingUserId = parseInt(btn.dataset.id);
+
           document.getElementById("user_id").value = btn.dataset.id;
           document.getElementById("username").value = btn.dataset.username;
           document.getElementById("password").value = "[HIDDEN]";
-          document.getElementById("role").value = btn.dataset.role;
+
+          if (currentUserId == editingUserId && currentRole === "Admin") {
+            document.getElementById("role").value = btn.dataset.role;
+            document.getElementById("role").disabled = true;
+            console.log("done");
+          } else {
+            document.getElementById("role").disabled = false;
+            document.getElementById("role").value = btn.dataset.role;
+          }
+
           modalBg.classList.add("active");
         });
       });
