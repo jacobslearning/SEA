@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, redirect
 from routes.assets import assets_blueprint
 from routes.auth import auth_blueprint
 from routes.dashboard import dashboard_blueprint
@@ -17,6 +17,11 @@ app.register_blueprint(auth_blueprint)
 app.register_blueprint(dashboard_blueprint)
 app.register_blueprint(departments_blueprint)
 app.register_blueprint(users_blueprint)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return redirect('/')
+
 
 # make it so admins cant demote themselves back to user
 if __name__ == '__main__':
