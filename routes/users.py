@@ -19,6 +19,7 @@ def users():
     return render_template('users.html', users=users, user=user)
 
 @users_blueprint.route('/user/edit/<int:user_id>', methods=['POST'])
+@login_required
 def edit_user(user_id):
     user = current_user()
     data = request.form
@@ -50,6 +51,7 @@ def edit_user(user_id):
     return redirect(url_for('users.users'))
 
 @users_blueprint.route('/user/delete/<int:user_id>', methods=['POST'])
+@login_required
 def delete_user(user_id):
     user = current_user()
     if user['role'] != 'Admin' and user['id'] != user_id:
@@ -67,6 +69,7 @@ def delete_user(user_id):
     return redirect(url_for('users.users'))
 
 @users_blueprint.route('/user/promote/<int:user_id>', methods=['POST'])
+@login_required
 def promote_user(user_id):
     user = current_user()
     if user['role'] != 'Admin':
@@ -80,6 +83,7 @@ def promote_user(user_id):
     return redirect(url_for('users.users'))
 
 @users_blueprint.route('/user/create', methods=['POST'])
+@login_required
 def create_user():
     user = current_user()
     if user['role'] != 'Admin':

@@ -14,6 +14,7 @@ def departments():
     return render_template('departments.html', user=user, departments=departments)
 
 @departments_blueprint.route('/department/create', methods=['POST'])
+@login_required
 def create_department():
     user = current_user()
     data = request.form
@@ -29,6 +30,7 @@ def create_department():
     return redirect(url_for('departments.departments'))
 
 @departments_blueprint.route('/department/edit/<int:dept_id>', methods=['POST'])
+@login_required
 def edit_department(dept_id):
     user = current_user()
     data = request.form
@@ -44,6 +46,7 @@ def edit_department(dept_id):
     return redirect(url_for('departments.departments'))
 
 @departments_blueprint.route('/department/delete/<int:dept_id>', methods=['POST'])
+@login_required
 def delete_department(dept_id):
     user = current_user()
     connection = get_db()
