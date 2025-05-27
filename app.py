@@ -22,7 +22,6 @@ app.register_blueprint(users_blueprint)
 def page_not_found(e):
     return redirect('/')
 
-
 # make it so admins cant demote themselves back to user
 if __name__ == '__main__':
    app.run(debug = True)

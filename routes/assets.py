@@ -4,7 +4,6 @@ from routes.utils import login_required, current_user, get_db
 
 assets_blueprint = Blueprint('assets', __name__)
 
-# assets 
 @assets_blueprint.route('/assets')
 @login_required
 def assets():

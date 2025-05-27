@@ -4,7 +4,6 @@ from routes.utils import login_required, current_user, get_db
 
 users_blueprint = Blueprint('users', __name__)
 
-# users routes
 @users_blueprint.route('/users')
 @login_required
 def users():
