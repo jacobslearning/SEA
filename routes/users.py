@@ -32,6 +32,10 @@ def edit_user(user_id):
     
     if user['role'] != 'Admin':
         role = "User"
+    
+    if(user['role'] == 'Admin' and user['id'] == user_id and role == 'User'):
+        flash("You can not demote yourself to User", "info")
+        return redirect(url_for('users.users'))
 
     connection = get_db()
     cursor = connection.cursor()
