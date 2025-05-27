@@ -81,6 +81,25 @@
           {% endif %}
         </tbody>
       </table>
+      <div class="metrics-container">
+        <div class="metrics-box" style="background: #90c5f0">
+          <h4>Total Assets</h4>
+          <p class="metrics-text">{{ metrics.total_assets }}</p>
+        </div>
+        <div class="metrics-box" style="background: #ff9e9e">
+          <h4>Pending Approvals</h4>
+          <p class="metrics-text">{{ metrics.pending_assets }}</p>
+        </div>
+        <div class="metrics-box" style="background: #76d7a4">
+          <h4>Total Users</h4>
+          <p class="metrics-text">{{ metrics.total_users }}</p>
+        </div>
+        <div class="metrics-box" style="background: #f4e27a">
+          <h4>Departments</h4>
+          <p class="metrics-text">{{ metrics.total_departments }}</p>
+        </div>
+      </div>
+
       <div
         id="infoModal"
         class="modal-bg"

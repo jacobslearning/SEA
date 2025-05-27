@@ -33,4 +33,19 @@ def dashboard():
             WHERE a.owner_id = ? AND a.approved = 0
         ''', (user['id'],))
     assets = [dict(row) for row in cursor.fetchall()]
-    return render_template('dashboard.html', user=user, assets=assets)
+
+    metrics = {}
+
+    cursor.execute('SELECT COUNT(*) FROM Asset')
+    metrics['total_assets'] = cursor.fetchone()[0]
+
+    cursor.execute('SELECT COUNT(*) FROM Asset WHERE approved = 0')
+    metrics['pending_assets'] = cursor.fetchone()[0]
+
+    cursor.execute('SELECT COUNT(*) FROM User')
+    metrics['total_users'] = cursor.fetchone()[0]
+
+    cursor.execute('SELECT COUNT(*) FROM Department')
+    metrics['total_departments'] = cursor.fetchone()[0]
+
+    return render_template('dashboard.html', user=user, assets=assets, metrics=metrics)
