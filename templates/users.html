@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Users</title>
+    <title>IT Asset Manager</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/style.css') }}"
@@ -17,9 +17,9 @@
       <h2 class="text-center">Users</h2>
 
       <nav class="nav-links">
-        <a href="{{ url_for('dashboard') }}">Dashboard</a>
-        <a href="{{ url_for('departments') }}">Departments</a>
-        <a href="{{ url_for('assets') }}">Assets</a>
+        <a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('departments.departments') }}">Departments</a>
+        <a href="{{ url_for('assets.assets') }}">Assets</a>
       </nav>
       <button class="btn btn-create" id="openCreateModal">
         + Create New User
@@ -43,7 +43,7 @@
               {% if user['role'] == 'Admin' and u['role'] != 'Admin' %}
               <form
                 method="post"
-                action="{{ url_for('promote_user', user_id=u['id']) }}"
+                action="{{ url_for('users.promote_user', user_id=u['id']) }}"
                 style="display: inline"
               >
                 <button
@@ -67,7 +67,7 @@
 
               <form
                 method="post"
-                action="{{ url_for('delete_user', user_id=u['id']) }}"
+                action="{{ url_for('users.delete_user', user_id=u['id']) }}"
                 style="display: inline"
               >
                 <button
@@ -103,7 +103,11 @@
     <div class="modal-bg" id="modalBg">
       <div class="modal">
         <h3 id="modalTitle">Create User</h3>
-        <form method="post" id="userForm" action="{{ url_for('create_user') }}">
+        <form
+          method="post"
+          id="userForm"
+          action="{{ url_for('users.create_user') }}"
+        >
           <input type="hidden" name="user_id" id="user_id" />
 
           <label for="username">Username</label>
@@ -150,7 +154,7 @@
       // create modal
       openCreateModalBtn.addEventListener("click", () => {
         modalTitle.textContent = "Create User";
-        userForm.action = "{{ url_for('create_user') }}";
+        userForm.action = "{{ url_for('users.create_user') }}";
         userForm.reset();
         document.getElementById("user_id").value = "";
         modalBg.classList.add("active");

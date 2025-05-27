@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Departments</title>
+    <title>IT Asset Manager</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/style.css') }}"
@@ -17,9 +17,9 @@
       <h2 class="text-center">Departments</h2>
 
       <nav class="nav-links">
-        <a href="{{ url_for('dashboard') }}">Dashboard</a>
-        <a href="{{ url_for('assets') }}">Assets</a>
-        <a href="{{ url_for('users') }}">Users</a>
+        <a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('assets.assets') }}">Assets</a>
+        <a href="{{ url_for('users.users') }}">Users</a>
       </nav>
 
       {% if user['role'] == 'Admin' %}
@@ -52,7 +52,7 @@
               </button>
               <form
                 method="post"
-                action="{{ url_for('delete_department', dept_id=dept['id']) }}"
+                action="{{ url_for('departments.delete_department', dept_id=dept['id']) }}"
                 style="display: inline"
               >
                 <button
@@ -92,7 +92,7 @@
         <form
           method="post"
           id="deptForm"
-          action="{{ url_for('create_department') }}"
+          action="{{ url_for('departments.create_department') }}"
         >
           <input type="hidden" name="dept_id" id="dept_id" />
 
@@ -121,7 +121,7 @@
 
         openCreateModalBtn.addEventListener("click", () => {
           modalTitle.textContent = "Create Department";
-          deptForm.action = "{{ url_for('create_department') }}";
+          deptForm.action = "{{ url_for('departments.create_department') }}";
           deptForm.reset();
           document.getElementById("dept_id").value = "";
           modalBg.classList.add("active");

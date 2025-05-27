@@ -10,7 +10,11 @@
   </head>
   <body>
     <div class="dashboard-container">
-      <form method="post" action="{{ url_for('logout') }}" class="logout-form">
+      <form
+        method="post"
+        action="{{ url_for('auth.logout') }}"
+        class="logout-form"
+      >
         <button type="submit">Logout</button>
       </form>
       <button id="info-icon" class="info-icon" aria-label="Help Info">
@@ -36,10 +40,10 @@
       <h2 class="text-center">Welcome, {{ user['username'] }}!</h2>
 
       <nav class="nav-links">
-        <a href="{{ url_for('dashboard') }}">Dashboard</a>
-        <a href="{{ url_for('assets') }}">Assets</a>
-        <a href="{{ url_for('departments') }}">Departments</a>
-        <a href="{{ url_for('users') }}">Users</a>
+        <a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('assets.assets') }}">Assets</a>
+        <a href="{{ url_for('departments.departments') }}">Departments</a>
+        <a href="{{ url_for('users.users') }}">Users</a>
       </nav>
       <div class="pending-header">
         <h3 class="heading-text">
