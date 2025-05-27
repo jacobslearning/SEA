@@ -16,6 +16,9 @@ def client():
         cursor.executescript('''
                              
             DROP TABLE IF EXISTS User;
+            DROP TABLE IF EXISTS Department;
+            DROP TABLE IF EXISTS Asset;
+                             
             CREATE TABLE IF NOT EXISTS User (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT UNIQUE NOT NULL,
