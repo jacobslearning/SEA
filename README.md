@@ -12,9 +12,22 @@ python setup_db.py
 flask --debug run
 ```
 
+### Running Automated Tests
+
+To run the automated tests, run the following command in your terminal from the project root:
+
+```bash
+python -m pytest .\tests/
+```
+
 ### Sample Data
 
-All user accounts in the sample data use the password **password**.
+All user accounts in the sample data use the password **password**. Here are some user accounts that you may find useful:
+
+| Username | Password     | Role  |
+| -------- | ------------ | ----- |
+| harry    | **password** | User  |
+| admin    | **password** | Admin |
 
 ### Alerts
 

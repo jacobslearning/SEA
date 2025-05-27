@@ -166,4 +166,3 @@ def test_asset_approve(client):
     response = client.post('/asset/approve/3', follow_redirects=True)
     assert response.status_code == 200
     assert b"Asset approved" in response.data
-
