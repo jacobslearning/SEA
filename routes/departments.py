@@ -54,7 +54,7 @@ def delete_department(dept_id):
     if user['role'] != 'Admin':
         flash("Unauthorised Access", "danger")
         return redirect(url_for('departments.departments'))
-    
+    cursor.execute('DELETE FROM Asset WHERE owner_id = ?', (int(user['id']),))
     cursor.execute('DELETE FROM Department WHERE id = ?', (dept_id,))
     connection.commit()
     flash(f"Department deleted", "info")
