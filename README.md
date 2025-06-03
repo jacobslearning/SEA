@@ -9,7 +9,7 @@ To start, run the following commands in your terminal:
 ```bash
 pip install -r requirements.txt
 python setup_db.py
-flask --debug run
+python app.py
 ```
 
 ### Running Automated Tests
@@ -17,7 +17,7 @@ flask --debug run
 To run the automated tests, run the following command in your terminal from the project root:
 
 ```bash
-python -m pytest .\tests/
+python -m pytest tests/
 ```
 
 ### Sample Data
