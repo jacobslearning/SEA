@@ -97,6 +97,13 @@ def create_user():
 
     connection = get_db()
     cursor = connection.cursor()
+    cursor.execute('SELECT * FROM User WHERE username = ?', (username,))
+    users = cursor.fetchall()
+
+    if users:
+        flash("A user already exists with this name", "info")
+        return redirect(url_for('users.users'))
+    
     cursor.execute('INSERT INTO User (username,password_hash,role) VALUES (?,?,?)', (username, password_hash, role))
     connection.commit()
     flash(f"User {username} created", "success")

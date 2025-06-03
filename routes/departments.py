@@ -24,6 +24,13 @@ def create_department():
         flash("Unauthorised Access", "danger")
         return redirect(url_for('departments.departments'))
     
+    cursor.execute('SELECT * FROM Department WHERE name = ?', (data['name'],))
+    departments = cursor.fetchall()
+
+    if departments:
+        flash("A department already exists with this name", "info")
+        return redirect(url_for('departments.departments'))
+    
     cursor.execute('INSERT INTO Department (name) VALUES (?)', (data['name'],))
     connection.commit()
     flash(f"Department {data['name']} created", "success")
