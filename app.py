@@ -24,4 +24,4 @@ def page_not_found(e):
 
 # make it so admins cant demote themselves back to user
 if __name__ == '__main__':
-   app.run(debug = True)
+   app.run(debug = True, host="0.0.0.0", port=5000)
