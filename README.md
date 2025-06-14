@@ -2,6 +2,10 @@
 
 This project was completed by **Jacob S** for the **AC0 Software Engineering & Agile QA** module.
 
+## Hosted Online
+
+The application can be accessed at: **https://jacob-s-sea-project-it-asset-manager.onrender.com**
+
 ## Setup
 
 To start, run the following commands in your terminal:
